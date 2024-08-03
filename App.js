@@ -1,3 +1,4 @@
+import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -5,12 +6,13 @@ import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/FontAwesome6'; // Import FontAwesome6
+import Icon from 'react-native-vector-icons/FontAwesome6';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 import HomeScreen from './screens/HomeScreen';
 import PlanterLocationScreen from './screens/PlanterLocationScreen';
 import CameraScreen from './screens/CameraScreen';
-import CommunityScreen from './screens/CommunityScreen'; // Import Community screen
-import RedeemScreen from './screens/RedeemScreen'; // Import Redeem screen
+import CommunityScreen from './screens/CommunityScreen';
+import RedeemScreen from './screens/RedeemScreen';
 import MapScreen from './screens/MapScreen';
 
 const Stack = createNativeStackNavigator();
@@ -42,18 +44,23 @@ export default function App() {
                 let iconName;
 
                 if (route.name === 'Green Snapper') {
-                  iconName = focused ? 'camera' : 'people-group';
+                  iconName = focused ? 'camera' : 'camera-outline';
+                  return <IonIcon name={iconName} size={size} color={color} />;
                 } else if (route.name === 'Home') {
                   iconName = focused ? 'home' : 'home-outline';
+                  return <IonIcon name={iconName} size={size} color={color} />;
                 } else if (route.name === 'Planter Mapper') {
                   iconName = focused ? 'map' : 'map-outline';
+                  return <IonIcon name={iconName} size={size} color={color} />;
                 } else if (route.name === 'Community') {
-                  iconName = focused ? 'people-group' : 'people-group'; // Adjusted icon for Community
+                  iconName = focused ? 'people-group' : 'people-group';
+                  return <Icon name={iconName} size={size} color={color} />;
                 } else if (route.name === 'Redeem') {
-                  iconName = focused ? 'cash' : 'cash-outline'; // Icon for Redeem
+                  iconName = focused ? 'cash' : 'cash-outline';
+                  return <IonIcon name={iconName} size={size} color={color} />;
                 }
 
-                return <Icon name={iconName} size={size} color={color} />;
+                return null;
               },
               headerShown: false,
               tabBarActiveTintColor: '#059212',
