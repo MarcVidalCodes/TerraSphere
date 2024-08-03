@@ -6,6 +6,7 @@ import * as MediaLibrary from 'expo-media-library';
 import Button from '../components/Button';
 import CircleButton from '../components/CircleButton'; // Import the new CircleButton component
 import { saveImage } from '../lib/utils'; // Import saveImage function from utils
+import { processImage } from '../lib/openai'; // Import processImage function from OpenAI API
 
 const CameraScreen = () => {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
@@ -37,7 +38,8 @@ const CameraScreen = () => {
       try {
         const base64Url = await saveImage(image); // Save image and get base64 URL
         if (base64Url) {
-          Alert.alert('Your Green Thumb', base64Url); // Display base64 URL in alert
+          const description = await processImage(base64Url); // Get image description from OpenAI
+          Alert.alert('Image Description', description); // Display description in alert
         }
         setImage(null);
       } catch (e) {
