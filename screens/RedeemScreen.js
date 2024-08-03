@@ -1,31 +1,81 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { getGreenPoints, redeemItem } from '../lib/utils'; // Import updated functions
 
 const RedeemScreen = () => {
-  const studyPoints = 120;
+  const [greenPoints, setGreenPoints] = useState(getGreenPoints()); // Initialize with current points
+  const [redeemable, setRedeemable] = useState({});
+  const [redeemed, setRedeemed] = useState({});
 
   const data = [
     {
       id: "1",
-      title: "Prize 1",
-      description: "You won!",
-      pointsCost: 100,
-      imageUrl: 'https://via.placeholder.com/150',
+      title: "Outdoor Hat",
+      description: "Stylish hat for your outdoor adventures!",
+      pointsCost: 150,
+      imageUrl: 'https://via.placeholder.com/150?text=Hat',
+      key: 'hat',
     },
     {
       id: "2",
-      title: "Prize 2",
-      description: "You Won!",
-      pointsCost: 200,
-      imageUrl: 'https://via.placeholder.com/150',
+      title: "Ray-Ban Discount",
+      description: "Get 20% off on Ray-Ban sunglasses.",
+      pointsCost: 300,
+      imageUrl: 'https://via.placeholder.com/150?text=Sunglasses',
+      key: 'rayBanDiscount',
+    },
+    {
+      id: "3",
+      title: "Camping Gear",
+      description: "High-quality camping gear set for your trips.",
+      pointsCost: 600,
+      imageUrl: 'https://via.placeholder.com/150?text=Camping+Gear',
+      key: 'campingGear',
+    },
+    {
+      id: "4",
+      title: "National Park Pass",
+      description: "Annual pass for national parks.",
+      pointsCost: 1200,
+      imageUrl: 'https://via.placeholder.com/150?text=Park+Pass',
+      key: 'parkPass',
     },
   ];
+
+  useEffect(() => {
+    // Initialize redeemable and redeemed statuses based on current points
+    const initialRedeemable = {};
+    const initialRedeemed = {};
+
+    data.forEach(item => {
+      const { redeemable: isRedeemable, redeemed: isRedeemed } = redeemItem(item, greenPoints, setGreenPoints);
+      initialRedeemable[item.key] = isRedeemable;
+      initialRedeemed[item.key] = isRedeemed;
+    });
+
+    setRedeemable(initialRedeemable);
+    setRedeemed(initialRedeemed);
+  }, [greenPoints]);
+
+  const handleRedeem = (item) => {
+    const { redeemable: isRedeemable, redeemed: isRedeemed } = redeemItem(item, greenPoints, setGreenPoints);
+    if (!redeemed[item.key] && isRedeemable) {
+      setRedeemed(prev => ({
+        ...prev,
+        [item.key]: isRedeemed, // Mark as redeemed
+      }));
+      setRedeemable(prev => ({
+        ...prev,
+        [item.key]: isRedeemable, // Mark as not redeemable
+      }));
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.pointsContainer}>
-        <Text style={styles.pointsText}>Points: {studyPoints}</Text>
+        <Text style={styles.pointsText}>Green Points: {greenPoints}</Text>
       </View>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {data.map(item => (
@@ -37,7 +87,12 @@ const RedeemScreen = () => {
             <Text style={styles.itemTitle}>{item.title}</Text>
             <Text style={styles.itemDescription}>{item.description}</Text>
             <Text style={styles.pointsCost}>Cost: {item.pointsCost} Points</Text>
-            <TouchableOpacity style={styles.button}>
+            {redeemed[item.key] && <Text style={styles.notEnough}>Already redeemed</Text>}
+            <TouchableOpacity 
+              style={[styles.button, redeemed[item.key] && styles.disabledButton]} 
+              onPress={() => handleRedeem(item)} 
+              disabled={redeemed[item.key]}
+            >
               <Text style={styles.buttonText}>Redeem</Text>
             </TouchableOpacity>
           </View>
@@ -57,7 +112,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   pointsText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#473E69',
   },
@@ -66,48 +121,61 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   card: {
-    backgroundColor: '#f9f9f9',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-    padding: 10,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
     width: '100%',
     maxWidth: 300,
-    marginBottom: 15,
+    marginVertical: 10,
+    padding: 15,
     alignItems: 'center',
   },
   image: {
-    width: 120,
-    height: 80,
-    marginBottom: 8,
+    width: 150,
+    height: 100,
+    marginBottom: 10,
+    borderRadius: 8,
   },
   itemTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#473E69',
-    marginBottom: 4,
+    marginBottom: 5,
   },
   itemDescription: {
-    fontSize: 12,
+    fontSize: 14,
     color: 'gray',
     textAlign: 'center',
-    marginBottom: 4,
   },
   pointsCost: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
-    color: '#28a745',
-    marginBottom: 10,
+    color: '#28a745', // Green color for points cost
+    marginVertical: 10,
   },
   button: {
-    backgroundColor: '#28a745',
-    borderRadius: 4,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    backgroundColor: '#28a745', // Green button background
+    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginTop: 10,
+  },
+  disabledButton: {
+    backgroundColor: '#d3d3d3', // Gray background when disabled
   },
   buttonText: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
+  },
+  notEnough: {
+    color: 'red',
+    fontSize: 14,
+    marginVertical: 5,
   },
 });
 
