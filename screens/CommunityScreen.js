@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Linking } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, TextInput, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const EventScreen = () => {
   const [visibleEvents, setVisibleEvents] = useState(2); // Number of events to show initially
+  const [city, setCity] = useState('');
+  const [filteredEvents, setFilteredEvents] = useState([]);
 
   const events = [
     {
@@ -66,7 +68,50 @@ const EventScreen = () => {
       date: "April 25, 2025",
       company: "City of Toronto",
     },
+    {
+      id: "7",
+      title: "Green Drinks Ottawa",
+      description: "An open invitation to anyone studying, working on, or just interested in all things sustainable and environmental!",
+      imageUrl: 'https://via.placeholder.com/150',
+      eventUrl: 'https://www.greendrinks.org/ON/Ottawa',
+      location: "207 Bell St, Ottawa, Ontario",
+      date: "August 8, 2024",
+      company: "Ottawa Green Drinks",
+    },
+    {
+      id: "8",
+      title: "Ottawa-Gatineau Climate March",
+      description: "March and rally at several locations in the Ottawa-Gatineau area!",
+      imageUrl: 'https://via.placeholder.com/150',
+      eventUrl: 'https://www.toronto.ca/explore-enjoy/festivals-events/clean-toronto-together/',
+      location: "110 Laurier Ave W, Ottawa, ON",
+      date: "Sep 21, 2024",
+      company: "Ecology Ottawa",
+    },
+    {
+      id: "9",
+      title: "McKellar Park Community Association Fall Festival",
+      description: "Join us at our annual Fall Festival for a fun-packed day!",
+      imageUrl: 'https://via.placeholder.com/150',
+      eventUrl: 'https://mckellarparkcommunity.wordpress.com/tag/fall-festival/',
+      location: "539 Wavell Ave, Ottawa, ON",
+      date: "Sep 22, 2024",
+      company: "Ecology Ottawa",
+    },
   ];
+
+  const handleSearch = () => {
+    if (city.toLowerCase() === 'toronto') {
+      const filtered = events.filter(event => event.id >= "1" && event.id <= "6");
+      setFilteredEvents(filtered);
+    } else if (city.toLowerCase() === 'ottawa') {
+      const filtered = events.filter(event => event.id >= "7" && event.id <= "9");
+      setFilteredEvents(filtered);
+    } else {
+      setFilteredEvents([]); // No events for other cities
+    }
+    setVisibleEvents(2); // Reset to show only 2 events initially
+  };
 
   const handleLoadMore = () => {
     setVisibleEvents(prev => prev + 2); // Show 2 more events
@@ -74,8 +119,17 @@ const EventScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <TextInput
+        style={styles.input}
+        placeholder="Enter city name"
+        value={city}
+        onChangeText={setCity}
+      />
+      <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+        <Text style={styles.searchButtonText}>Search</Text>
+      </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {events.slice(0, visibleEvents).map(event => (
+        {filteredEvents.slice(0, visibleEvents).map(event => (
           <View key={event.id} style={styles.card}>
             <Image
               source={{ uri: event.imageUrl }}
@@ -91,7 +145,7 @@ const EventScreen = () => {
             </TouchableOpacity>
           </View>
         ))}
-        {visibleEvents < events.length && (
+        {visibleEvents < filteredEvents.length && (
           <TouchableOpacity style={styles.loadMoreButton} onPress={handleLoadMore}>
             <Text style={styles.loadMoreButtonText}>Load More</Text>
           </TouchableOpacity>
@@ -105,6 +159,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    margin: 10,
+    paddingHorizontal: 10,
+  },
+  searchButton: {
+    backgroundColor: '#1E90FF',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginHorizontal: 10,
+    marginBottom: 10,
+  },
+  searchButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    textAlign: 'center',
   },
   scrollContainer: {
     padding: 10,
@@ -155,6 +229,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     marginTop: 5,
+  },
+  noEventsText: {
+    fontSize: 16,
+    color: 'red',
+    textAlign: 'center',
+    marginVertical: 10,
   },
   loadMoreButton: {
     backgroundColor: '#28a745',
