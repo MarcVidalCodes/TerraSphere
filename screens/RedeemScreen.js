@@ -3,6 +3,13 @@ import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'rea
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getGreenPoints, decrementGreenPoints } from '../lib/utils'; // Adjust the import path as necessary
 
+// Import images
+import rbImage from '../assets/rb.png';
+import flowerImage from '../assets/flower.png';
+import passImage from '../assets/pass.png';
+import backpackImage from '../assets/backpack.png';
+import susImage from '../assets/sus.png';
+
 const RedeemScreen = () => {
   const [greenPoints, setGreenPoints] = useState(getGreenPoints());
   const [redeemable, setRedeemable] = useState({});
@@ -11,35 +18,43 @@ const RedeemScreen = () => {
   const data = [
     {
       id: "1",
-      title: "Gift Card",
-      description: "$10 Amazon Gift Card!",
-      pointsCost: 100,
-      imageUrl: 'https://via.placeholder.com/150',
-      key: 'giftCard',
+      title: "Ray-Ban Discount",
+      description: "10% off on Ray-Ban sunglasses",
+      pointsCost: 250,
+      imageUrl: rbImage,
+      key: 'rb',
     },
     {
       id: "2",
-      title: "Gift Card",
-      description: "$20 Staples Gift Card",
-      pointsCost: 250,
-      imageUrl: 'https://via.placeholder.com/150',
-      key: 'giftCard2',
+      title: "Seed Pack",
+      description: "Pack of seeds to plant in your garden",
+      pointsCost: 300,
+      imageUrl: flowerImage,
+      key: 'flower',
     },
     {
       id: "3",
-      title: "Laptop",
-      description: "ChromeBook Laptop!",
-      pointsCost: 60000,
-      imageUrl: 'https://via.placeholder.com/150',
-      key: 'laptop',
+      title: "Nature Park Pass",
+      description: "One time park entrance to any Canadian national park",
+      pointsCost: 500,
+      imageUrl: passImage,
+      key: 'pass',
     },
     {
       id: "4",
-      title: "Scholarship",
-      description: "$500 in scholarship money to any accredited Canadian University",
-      pointsCost: 100000,
-      imageUrl: 'https://via.placeholder.com/150',
-      key: 'scholarship',
+      title: "Sustainable Living Guide",
+      description: "Guide to living a more eco-friendly lifestyle",
+      pointsCost: 1000,
+      imageUrl: susImage,
+      key: 'sus',
+    },
+    {
+      id: "5",
+      title: "Eco-Friendly Backpack",
+      description: "Stylish and sustainable backpack",
+      pointsCost: 5000,
+      imageUrl: backpackImage,
+      key: 'backpack',
     },
   ];
 
@@ -79,7 +94,7 @@ const RedeemScreen = () => {
         {data.map(item => (
           <View key={item.id} style={styles.card}>
             <Image
-              source={{ uri: item.imageUrl }}
+              source={item.imageUrl}
               style={styles.image}
             />
             <Text style={styles.itemTitle}>{item.title}</Text>
