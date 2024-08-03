@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, Image, Alert, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, Image, Alert } from 'react-native';
 import { Camera, CameraType } from 'expo-camera/legacy';
+import * as FileSystem from 'expo-file-system'; // Import FileSystem
+import * as MediaLibrary from 'expo-media-library';
 import Button from '../components/Button';
-import CircleButton from '../components/CircleButton';  // Import the new CircleButton component
+import CircleButton from '../components/CircleButton'; // Import the new CircleButton component
+import { saveImage } from '../lib/utils'; // Import saveImage function from utils
 
 const CameraScreen = () => {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [image, setImage] = useState(null);
   const [type, setType] = useState(CameraType.back);
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
-  const [loading, setLoading] = useState(false); // Add loading state
   const cameraRef = useRef(null);
 
   useEffect(() => {
@@ -33,13 +35,13 @@ const CameraScreen = () => {
   const handleSaveImage = async () => {
     if (image) {
       try {
-        setLoading(true); // Set loading to true
-        // Add logic to convert image to base64 and process it here
+        const base64Url = await saveImage(image); // Save image and get base64 URL
+        if (base64Url) {
+          Alert.alert('Your Green Thumb', base64Url); // Display base64 URL in alert
+        }
         setImage(null);
       } catch (e) {
         console.log(e);
-      } finally {
-        setLoading(false); // Set loading to false
       }
     }
   };
@@ -79,18 +81,9 @@ const CameraScreen = () => {
           <CircleButton onPress={takePicture} />
         </Camera>
       ) : (
-        <>
-          {loading ? (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color="#fff" />
-              <Text style={styles.loadingText}>Loading...</Text>
-            </View>
-          ) : (
-            <Image source={{ uri: image }} style={styles.camera} />
-          )}
-        </>
+        <Image source={{ uri: image }} style={styles.camera} />
       )}
-      <View style={styles.bottomControls}>
+      <View>
         {image ? (
           <View style={styles.saveRetakeRow}>
             <Button title={"Re-take"} icon="retweet" onPress={() => setImage(null)} />
@@ -114,31 +107,18 @@ const styles = StyleSheet.create({
   },
   controlRow: {
     position: 'absolute',
-    bottom: 69,
+    bottom: 60,
     left: 0,
     right: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 45,
   },
-  bottomControls: {
-    paddingBottom: 10,
-  },
   saveRetakeRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 50,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Optional: Adds a semi-transparent background
-  },
-  loadingText: {
-    color: '#fff',
-    fontSize: 20,
-    marginTop: 10,
+    paddingBottom: 20,
   },
 });
 
