@@ -1,57 +1,56 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getGreenPoints, redeemItem } from '../lib/utils'; // Import updated functions
+import { getGreenPoints, decrementGreenPoints } from '../lib/utils'; // Adjust the import path as necessary
 
 const RedeemScreen = () => {
-  const [greenPoints, setGreenPoints] = useState(getGreenPoints()); // Initialize with current points
+  const [greenPoints, setGreenPoints] = useState(getGreenPoints());
   const [redeemable, setRedeemable] = useState({});
   const [redeemed, setRedeemed] = useState({});
 
   const data = [
     {
       id: "1",
-      title: "Outdoor Hat",
-      description: "Stylish hat for your outdoor adventures!",
-      pointsCost: 150,
-      imageUrl: 'https://via.placeholder.com/150?text=Hat',
-      key: 'hat',
+      title: "Gift Card",
+      description: "$10 Amazon Gift Card!",
+      pointsCost: 100,
+      imageUrl: 'https://via.placeholder.com/150',
+      key: 'giftCard',
     },
     {
       id: "2",
-      title: "Ray-Ban Discount",
-      description: "Get 20% off on Ray-Ban sunglasses.",
-      pointsCost: 300,
-      imageUrl: 'https://via.placeholder.com/150?text=Sunglasses',
-      key: 'rayBanDiscount',
+      title: "Gift Card",
+      description: "$20 Staples Gift Card",
+      pointsCost: 250,
+      imageUrl: 'https://via.placeholder.com/150',
+      key: 'giftCard2',
     },
     {
       id: "3",
-      title: "Camping Gear",
-      description: "High-quality camping gear set for your trips.",
-      pointsCost: 600,
-      imageUrl: 'https://via.placeholder.com/150?text=Camping+Gear',
-      key: 'campingGear',
+      title: "Laptop",
+      description: "ChromeBook Laptop!",
+      pointsCost: 60000,
+      imageUrl: 'https://via.placeholder.com/150',
+      key: 'laptop',
     },
     {
       id: "4",
-      title: "National Park Pass",
-      description: "Annual pass for national parks.",
-      pointsCost: 1200,
-      imageUrl: 'https://via.placeholder.com/150?text=Park+Pass',
-      key: 'parkPass',
+      title: "Scholarship",
+      description: "$500 in scholarship money to any accredited Canadian University",
+      pointsCost: 100000,
+      imageUrl: 'https://via.placeholder.com/150',
+      key: 'scholarship',
     },
   ];
 
   useEffect(() => {
-    // Initialize redeemable and redeemed statuses based on current points
+    // Initialize redeemable and redeemed statuses
     const initialRedeemable = {};
     const initialRedeemed = {};
 
     data.forEach(item => {
-      const { redeemable: isRedeemable, redeemed: isRedeemed } = redeemItem(item, greenPoints, setGreenPoints);
-      initialRedeemable[item.key] = isRedeemable;
-      initialRedeemed[item.key] = isRedeemed;
+      initialRedeemable[item.key] = greenPoints >= item.pointsCost;
+      initialRedeemed[item.key] = false; // All items are initially not redeemed
     });
 
     setRedeemable(initialRedeemable);
@@ -59,23 +58,22 @@ const RedeemScreen = () => {
   }, [greenPoints]);
 
   const handleRedeem = (item) => {
-    const { redeemable: isRedeemable, redeemed: isRedeemed } = redeemItem(item, greenPoints, setGreenPoints);
-    if (!redeemed[item.key] && isRedeemable) {
-      setRedeemed(prev => ({
-        ...prev,
-        [item.key]: isRedeemed, // Mark as redeemed
-      }));
-      setRedeemable(prev => ({
-        ...prev,
-        [item.key]: isRedeemable, // Mark as not redeemable
-      }));
+    if (!redeemed[item.key]) {
+      if (redeemable[item.key]) {
+        decrementGreenPoints(item.pointsCost);
+        setGreenPoints(getGreenPoints());
+        setRedeemed(prev => ({
+          ...prev,
+          [item.key]: true, // Mark as redeemed
+        }));
+      }
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.pointsContainer}>
-        <Text style={styles.pointsText}>Green Points: {greenPoints}</Text>
+        <Text style={styles.pointsText}>Points: {greenPoints}</Text>
       </View>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {data.map(item => (
@@ -158,7 +156,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   button: {
-    backgroundColor: '#28a745', // Green button background
+    backgroundColor: '#059212', // Green button background
     borderRadius: 5,
     paddingVertical: 10,
     paddingHorizontal: 20,
