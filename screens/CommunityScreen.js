@@ -6,13 +6,14 @@ const EventScreen = () => {
   const [visibleEvents, setVisibleEvents] = useState(2); // Number of events to show initially
   const [city, setCity] = useState('');
   const [filteredEvents, setFilteredEvents] = useState([]);
+  const [searched, setSearched] = useState(false);
 
   const events = [
     {
       id: "1",
       title: "River and Side Walk Cleanup",
       description: "Clean up our beautiful area and make a positive impact on our environment! ",
-      imageUrl: 'https://via.placeholder.com/150',
+      imageUrl: 'https://media.cntraveler.com/photos/5b2c0684a98055277ea83e26/16:9/w_2560,c_limit/CN-Tower_GettyImages-615764386.jpg',
       eventUrl: 'https://www.toronto.ca/explore-enjoy/festivals-events/festivals-events-calendar/?start=2024-08-03T04%3A00%3A00.000Z&end=2025-08-04T03%3A59%3A59.999Z&search=clean&categories=&themes=&free=false&accessible=false&ongoing=false&view=fecList&id=NzhsJnuowh3sTycDi6rhvQ&oindex=1',
       location: "705 Progress Avenue",
       date: "August 3, 2024: 1pm - 2:30pm",
@@ -22,7 +23,7 @@ const EventScreen = () => {
       id: "2",
       title: "Bayview Village Park Mulching",
       description: "Enhance the natural habitat in this peaceful park by mulching young native trees and shrubs.",
-      imageUrl: 'https://via.placeholder.com/150',
+      imageUrl: 'https://media.cntraveler.com/photos/5b2c0684a98055277ea83e26/16:9/w_2560,c_limit/CN-Tower_GettyImages-615764386.jpg',
       eventUrl: 'https://www.toronto.ca/community-people/get-involved/volunteer-with-the-city/tree-planting-stewardship/tree-planting-stewardship-events-calendar/?id=80_y%24B5LHKnqY%24fLuL3Z%24g',
       location: "Bayview Village Park",
       date: "August 7, 2024: 9am - 11am",
@@ -32,7 +33,7 @@ const EventScreen = () => {
       id: "3",
       title: "Broadacres Park Mulching",
       description: "Support local wildlife and mulch the growing forest at Broadacres Park.",
-      imageUrl: 'https://via.placeholder.com/150',
+      imageUrl: 'https://media.cntraveler.com/photos/5b2c0684a98055277ea83e26/16:9/w_2560,c_limit/CN-Tower_GettyImages-615764386.jpg',
       eventUrl: 'https://www.toronto.ca/community-people/get-involved/volunteer-with-the-city/tree-planting-stewardship/tree-planting-stewardship-events-calendar/?start=2024-08-03T04%3A00%3A00.000Z&end=2025-08-04T03%3A59%3A59.999Z&search=&categories=&themes=&free=false&accessible=false&ongoing=false&view=fecList&id=l2YowPtX%24S9pXTvpL7Z29g&oindex=',
       location: "Toronto Beach",
       date: "August 11, 2024: 9am - 11am",
@@ -42,7 +43,7 @@ const EventScreen = () => {
       id: "4",
       title: "Humber River Fall Cleanup",
       description: "Join us in making a difference with the Humber River Fall Cleanup!",
-      imageUrl: 'https://via.placeholder.com/150',
+      imageUrl: 'https://media.cntraveler.com/photos/5b2c0684a98055277ea83e26/16:9/w_2560,c_limit/CN-Tower_GettyImages-615764386.jpg',
       eventUrl: 'https://www.torontoadventures.ca/all-adventures/spring-fall-cleanups/',
       location: "Humber River",
       date: "October 20th 2024",
@@ -52,7 +53,7 @@ const EventScreen = () => {
       id: "5",
       title: "Moss Park Community Clean Up",
       description: "Join the Toronto Police Service for a community clean up in Moss Park!",
-      imageUrl: 'https://via.placeholder.com/150',
+      imageUrl: 'https://media.cntraveler.com/photos/5b2c0684a98055277ea83e26/16:9/w_2560,c_limit/CN-Tower_GettyImages-615764386.jpg',
       eventUrl: 'https://www.dontmesswiththedon.ca/clean-ups',
       location: "Ontario Street Parkette, Moss Park",
       date: "August 18, 2024",
@@ -62,7 +63,7 @@ const EventScreen = () => {
       id: "6",
       title: "Toronto's next annual spring cleanup",
       description: "Join us in cleaning up the city of Toronto!",
-      imageUrl: 'https://via.placeholder.com/150',
+      imageUrl: 'https://media.cntraveler.com/photos/5b2c0684a98055277ea83e26/16:9/w_2560,c_limit/CN-Tower_GettyImages-615764386.jpg',
       eventUrl: 'https://www.toronto.ca/explore-enjoy/festivals-events/clean-toronto-together/',
       location: "Toronto, ON",
       date: "April 25, 2025",
@@ -72,7 +73,7 @@ const EventScreen = () => {
       id: "7",
       title: "Green Drinks Ottawa",
       description: "An open invitation to anyone studying, working on, or just interested in all things sustainable and environmental!",
-      imageUrl: 'https://via.placeholder.com/150',
+      imageUrl: 'https://www.acec.ca/images/Advocacy/05Parlim/HillGood.jpg',
       eventUrl: 'https://www.greendrinks.org/ON/Ottawa',
       location: "207 Bell St, Ottawa, Ontario",
       date: "August 8, 2024",
@@ -82,7 +83,7 @@ const EventScreen = () => {
       id: "8",
       title: "Ottawa-Gatineau Climate March",
       description: "March and rally at several locations in the Ottawa-Gatineau area!",
-      imageUrl: 'https://via.placeholder.com/150',
+      imageUrl: 'https://www.acec.ca/images/Advocacy/05Parlim/HillGood.jpg',
       eventUrl: 'https://www.toronto.ca/explore-enjoy/festivals-events/clean-toronto-together/',
       location: "110 Laurier Ave W, Ottawa, ON",
       date: "Sep 21, 2024",
@@ -92,7 +93,7 @@ const EventScreen = () => {
       id: "9",
       title: "McKellar Park Community Association Fall Festival",
       description: "Join us at our annual Fall Festival for a fun-packed day!",
-      imageUrl: 'https://via.placeholder.com/150',
+      imageUrl: 'https://www.acec.ca/images/Advocacy/05Parlim/HillGood.jpg',
       eventUrl: 'https://mckellarparkcommunity.wordpress.com/tag/fall-festival/',
       location: "539 Wavell Ave, Ottawa, ON",
       date: "Sep 22, 2024",
@@ -101,6 +102,7 @@ const EventScreen = () => {
   ];
 
   const handleSearch = () => {
+    setSearched(true);
     if (city.toLowerCase() === 'toronto') {
       const filtered = events.filter(event => event.id >= "1" && event.id <= "6");
       setFilteredEvents(filtered);
@@ -119,15 +121,20 @@ const EventScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter city name"
-        value={city}
-        onChangeText={setCity}
-      />
-      <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-        <Text style={styles.searchButtonText}>Search</Text>
-      </TouchableOpacity>
+      {!searched && (
+        <Text style={styles.title}>Search for environmental community events near you!</Text>
+      )}
+      <View style={searched ? styles.searchContainerTop : styles.searchContainerCenter}>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter City Name"
+          value={city}
+          onChangeText={setCity}
+        />
+        <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+          <Text style={styles.searchButtonText}>Search</Text>
+        </TouchableOpacity>
+      </View>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {filteredEvents.slice(0, visibleEvents).map(event => (
           <View key={event.id} style={styles.card}>
@@ -160,20 +167,39 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 120,
+  },
+  searchContainerCenter: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  searchContainerTop: {
+    justifyContent: 'center',
+    alignItems: 'center',
     margin: 10,
-    paddingHorizontal: 10,
+  },
+  input: {
+    height: 50,
+    width: 250,
+    borderColor: '#007502',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 20, 
+    fontSize: 15, 
+    marginBottom: 15,
+    textAlign: 'center',
   },
   searchButton: {
-    backgroundColor: '#1E90FF',
+    backgroundColor: '#00c903',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
     marginHorizontal: 10,
-    marginBottom: 10,
   },
   searchButtonText: {
     color: '#fff',
@@ -207,8 +233,9 @@ const styles = StyleSheet.create({
   itemTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#473E69',
+    color: '#00c903',
     marginBottom: 5,
+    textAlign: 'center',
   },
   itemDescription: {
     fontSize: 14,
@@ -225,16 +252,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   link: {
-    color: '#1E90FF',
+    color: '#007502',
     fontSize: 14,
     fontWeight: 'bold',
     marginTop: 5,
-  },
-  noEventsText: {
-    fontSize: 16,
-    color: 'red',
-    textAlign: 'center',
-    marginVertical: 10,
   },
   loadMoreButton: {
     backgroundColor: '#28a745',
