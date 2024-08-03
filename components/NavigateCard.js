@@ -4,11 +4,10 @@ import tw from 'twrnc';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GOOGLE_API_KEY } from '@env';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setDestination, setOrigin, setTravelTimeInformation, setFavourites } from '../slices/navSlice';
 import { useNavigation } from '@react-navigation/native';
 import { selectTravelTimeInformation, selectDestination, selectOrigin, selectFavourites } from '../slices/navSlice';
-import { useSelector } from 'react-redux';
 import { Icon } from 'react-native-elements';
 
 const NavigateCard = () => {
@@ -24,21 +23,31 @@ const NavigateCard = () => {
         if (!origin || !destination) return;
 
         const getTravelTime = async () => {
-            const travelTime = await fetch(`https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${origin.description}&destinations=${destination.description}&key=${GOOGLE_API_KEY}`)
-                .then(res => res.json())
-                .then(data => {
+            try {
+                const encodedOrigin = encodeURIComponent(origin.description);
+                const encodedDestination = encodeURIComponent(destination.description);
+                const response  = await fetch(`https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${encodedOrigin}&destinations=${encodedDestination}&key=${GOOGLE_API_KEY}`);
+
+                const data = await response.json();
+                if (data.rows[0].elements[0]) {
                     dispatch(setTravelTimeInformation(data.rows[0].elements[0].duration));
-                });
+                } else {
+                    console.error("No travel time information found in response");
+                }
+            } catch (error) {
+                console.error("Error fetching travel time:", error);
+            }
         };
         getTravelTime();
-    }, [origin, destination, GOOGLE_API_KEY]);
+    }, [origin, destination, GOOGLE_API_KEY, dispatch]);
 
     const handleFavourite = () => {
         setIsFavourited(!isFavourited);
         if (destination) {
-            const updatedFavourites = [...favourites, destination];
+            const updatedFavourites = isFavourited 
+                ? favourites.filter(fav => fav.location.lat !== destination.location.lat && fav.location.lng !== destination.location.lng)
+                : [...favourites, destination];
             dispatch(setFavourites(updatedFavourites));
-            console.log("Favourited location:", destination.description);
         }
     };
 
@@ -54,7 +63,7 @@ const NavigateCard = () => {
                         </View>
                         <View style={tw`flex-row justify-between items-center mb-4`}>
                             <Text style={[tw`text-xl font-semibold`, { textAlign: 'center' }]}>
-                                Distance: {travelTimeInformation?.text}
+                                Distance: {travelTimeInformation.text}
                             </Text>
                         </View>
                     </View>
@@ -82,22 +91,3 @@ const NavigateCard = () => {
 };
 
 export default NavigateCard;
-
-const toInputBoxStyles = StyleSheet.create({
-    container: {
-        backgroundColor: "white",
-        paddingTop: 20,
-        flex: 0,
-    },
-    textInput: {
-        backgroundColor: "#DDDDDF",
-        borderRadius: 0,
-        fontSize: 18,
-    },
-    textInputContainer: {
-        borderRadius: 0,
-        fontSize: 18,
-        paddingHorizontal: 20,
-        borderRadius: 0,
-    },
-});

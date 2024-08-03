@@ -9,18 +9,7 @@ const MapScreen = () => {
     const Stack = createStackNavigator();
   return (
     <View>
-      <View style={tw`h-7/10`}><Map /></View>
-      <View style={tw`h-3/10`}>
-        <Stack.Navigator>
-            <Stack.Screen
-                name="NavigateCard"
-                component={NavigateCard}
-                options={{
-                    headerShown: false,
-                }}
-            />
-        </Stack.Navigator>
-      </View>
+      <View style={tw`h-10/10`}><Map /></View>
 </View>
   );
 };

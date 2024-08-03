@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text, Alert } from 'react-native';
 import tw from 'twrnc';
 import MapView, { Marker } from 'react-native-maps';
@@ -6,14 +6,16 @@ import MapViewDirections from 'react-native-maps-directions';
 import { GOOGLE_API_KEY } from '@env';
 import { Icon } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
-import { selectOrigin, selectDestination } from '../slices/navSlice';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectOrigin, selectDestination, setTravelTimeInformation, setFavourites } from '../slices/navSlice';
 
 const Map = () => {
     const origin = useSelector(selectOrigin);
     const destination = useSelector(selectDestination);
+    const dispatch = useDispatch();
     const mapRef = useRef(null);
     const navigation = useNavigation();
+    const [isFavourited, setIsFavourited] = useState(false);
 
     useEffect(() => {
         if (!origin || !destination) return;
@@ -38,24 +40,43 @@ const Map = () => {
     useEffect(() => {
         const getTravelTime = async () => {
             if (!origin || !destination) return;
+
             try {
-                const response = await fetch(`https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${origin.description}&destinations=${destination.description}&key=${GOOGLE_API_KEY}`);
+                const response = await fetch(`https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${origin.location.lat},${origin.location.lng}&destinations=${destination.location.lat},${destination.location.lng}&key=${GOOGLE_API_KEY}`);
                 const data = await response.json();
-                if (data.rows[0].elements[0].status === "NOT_FOUND") {
-                    Alert.alert("Error", "Route not found between the selected locations.");
+
+                if (data.status !== 'OK') {
+                    Alert.alert("Error", `Google Places API error: ${data.status}`);
+                    console.error("API Response Status:", data.status);
                     return;
                 }
-                console.log(data.rows[0].elements[0].duration.text);
+
+                const travelTime = data.rows[0].elements[0];
+                if (travelTime.status === "NOT_FOUND") {
+                    Alert.alert("Error", "Route not found between the selected locations.");
+                } else {
+                    console.log("Travel Time:", travelTime.duration.text);
+                    dispatch(setTravelTimeInformation(travelTime));
+                }
             } catch (error) {
                 console.error("Error fetching travel time:", error);
+                Alert.alert("Error", "An error occurred while fetching the travel time.");
             }
         };
-        getTravelTime();
-    }, [origin, destination]);
 
-    // Log the coordinates of origin and destination
-    console.log('Origin:', origin);
-    console.log('Destination:', destination);
+        getTravelTime();
+    }, [origin, destination, dispatch]);
+
+    const handleFavourite = () => {
+        setIsFavourited(!isFavourited);
+        if (destination) {
+            // Update favourites in the Redux store
+            const updatedFavourites = isFavourited 
+                ? [] // Remove from favourites (adjust logic as needed)
+                : [destination]; // Add to favourites (adjust logic as needed)
+            dispatch(setFavourites(updatedFavourites));
+        }
+    };
 
     return (
         <View style={tw`flex-1`}>
@@ -128,10 +149,21 @@ const Map = () => {
                 )}
             </MapView>
             <TouchableOpacity
-                style={tw`absolute bottom-3 right-3 bg-white p-3 rounded-full shadow-lg`}
+                style={[styles.button, styles.recenterButton]}
                 onPress={recenterMap}
             >
-                <Icon name="my-location" size={20} />
+                <Icon name="my-location" size={30} />
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={[styles.button, styles.favouriteButton]}
+                onPress={handleFavourite}
+            >
+                <Icon
+                    name="star"
+                    type="antdesign"
+                    color={isFavourited ?  '#81A263' : "white"}
+                    size={30}
+                />
             </TouchableOpacity>
             <TouchableOpacity
                 style={tw`absolute top-15 left-8 bg-white p-3 rounded-full shadow-lg`}
@@ -146,6 +178,26 @@ const Map = () => {
 export default Map;
 
 const styles = StyleSheet.create({
+    button: {
+        backgroundColor: 'white',
+        padding: 15,
+        borderRadius: 50,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+    },
+    recenterButton: {
+        position: 'absolute',
+        bottom: 16,
+        right: 16,
+    },
+    favouriteButton: {
+        position: 'absolute',
+        bottom: 16,
+        left: 16,
+        backgroundColor: '#365E32',
+    },
     marker: {
         alignItems: 'center',
         justifyContent: 'center',
