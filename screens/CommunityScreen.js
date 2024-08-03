@@ -121,6 +121,12 @@ const EventScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.logoContainer}>
+        <Image
+          source={require('../assets/logo.png')} // Update with the correct path to your logo
+          style={styles.logo}
+        />
+      </View>
       {!searched && (
         <Text style={styles.title}>Search for environmental community events near you!</Text>
       )}
@@ -167,11 +173,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  logo: {
+    width: 320,
+    height: 150,
+    marginLeft: 30,
+    resizeMode: "contain",
+    color: "#059212",
+},
   title: {
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginVertical: 120,
+    marginVertical: 60,
   },
   searchContainerCenter: {
     justifyContent: 'center',
