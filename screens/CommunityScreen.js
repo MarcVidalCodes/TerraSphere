@@ -8,45 +8,63 @@ const EventScreen = () => {
   const events = [
     {
       id: "1",
-      title: "Tree Planting Event",
-      description: "Join us for a community tree planting event to help green our city!",
+      title: "River and Side Walk Cleanup",
+      description: "Clean up our beautiful area and make a positive impact on our environment! ",
       imageUrl: 'https://via.placeholder.com/150',
-      eventUrl: 'https://example.com/event1',
+      eventUrl: 'https://www.toronto.ca/explore-enjoy/festivals-events/festivals-events-calendar/?start=2024-08-03T04%3A00%3A00.000Z&end=2025-08-04T03%3A59%3A59.999Z&search=clean&categories=&themes=&free=false&accessible=false&ongoing=false&view=fecList&id=NzhsJnuowh3sTycDi6rhvQ&oindex=1',
+      location: "705 Progress Avenue",
+      date: "August 3, 2024: 1pm - 2:30pm",
+      company: "City of Toronto",
     },
     {
       id: "2",
-      title: "Beach Cleanup",
-      description: "Help us keep our beaches clean and safe for everyone!",
+      title: "Bayview Village Park Mulching",
+      description: "Enhance the natural habitat in this peaceful park by mulching young native trees and shrubs.",
       imageUrl: 'https://via.placeholder.com/150',
-      eventUrl: 'https://example.com/event2',
+      eventUrl: 'https://www.toronto.ca/community-people/get-involved/volunteer-with-the-city/tree-planting-stewardship/tree-planting-stewardship-events-calendar/?id=80_y%24B5LHKnqY%24fLuL3Z%24g',
+      location: "Bayview Village Park",
+      date: "August 7, 2024: 9am - 11am",
+      company: "City of Toronto",
     },
     {
       id: "3",
-      title: "Community Garden Workshop",
-      description: "Learn how to grow your own food at our community garden workshop.",
+      title: "Broadacres Park Mulching",
+      description: "Support local wildlife and mulch the growing forest at Broadacres Park.",
       imageUrl: 'https://via.placeholder.com/150',
-      eventUrl: 'https://example.com/event3',
+      eventUrl: 'https://www.toronto.ca/community-people/get-involved/volunteer-with-the-city/tree-planting-stewardship/tree-planting-stewardship-events-calendar/?start=2024-08-03T04%3A00%3A00.000Z&end=2025-08-04T03%3A59%3A59.999Z&search=&categories=&themes=&free=false&accessible=false&ongoing=false&view=fecList&id=l2YowPtX%24S9pXTvpL7Z29g&oindex=',
+      location: "Toronto Beach",
+      date: "August 11, 2024: 9am - 11am",
+      company: "City of Toronto",
     },
     {
       id: "4",
-      title: "Recycling Drive",
-      description: "Bring your recyclables to our community recycling drive!",
+      title: "Humber River Fall Cleanup",
+      description: "Join us in making a difference with the Humber River Fall Cleanup!",
       imageUrl: 'https://via.placeholder.com/150',
-      eventUrl: 'https://example.com/event4',
+      eventUrl: 'https://www.torontoadventures.ca/all-adventures/spring-fall-cleanups/',
+      location: "Humber River",
+      date: "October 20th 2024",
+      company: "Toronto Adventures",
     },
     {
       id: "5",
-      title: "Bird Watching Tour",
-      description: "Join us for a guided bird watching tour in the city park.",
+      title: "Moss Park Community Clean Up",
+      description: "Join the Toronto Police Service for a community clean up in Moss Park!",
       imageUrl: 'https://via.placeholder.com/150',
-      eventUrl: 'https://example.com/event5',
+      eventUrl: 'https://www.dontmesswiththedon.ca/clean-ups',
+      location: "Ontario Street Parkette, Moss Park",
+      date: "August 18, 2024",
+      company: "Don't Mess With The Don",
     },
     {
       id: "6",
-      title: "Environmental Fair",
-      description: "Learn about sustainable living at our environmental fair.",
+      title: "Toronto's next annual spring cleanup",
+      description: "Join us in cleaning up the city of Toronto!",
       imageUrl: 'https://via.placeholder.com/150',
-      eventUrl: 'https://example.com/event6',
+      eventUrl: 'https://www.toronto.ca/explore-enjoy/festivals-events/clean-toronto-together/',
+      location: "Toronto, ON",
+      date: "April 25, 2025",
+      company: "City of Toronto",
     },
   ];
 
@@ -65,6 +83,9 @@ const EventScreen = () => {
             />
             <Text style={styles.itemTitle}>{event.title}</Text>
             <Text style={styles.itemDescription}>{event.description}</Text>
+            <Text style={styles.itemDetail}><Text style={styles.boldText}>Location:</Text> {event.location}</Text>
+            <Text style={styles.itemDetail}><Text style={styles.boldText}>Date:</Text> {event.date}</Text>
+            <Text style={styles.itemDetail}><Text style={styles.boldText}>Company:</Text> {event.company}</Text>
             <TouchableOpacity onPress={() => Linking.openURL(event.eventUrl)}>
               <Text style={styles.link}>More Info</Text>
             </TouchableOpacity>
@@ -121,10 +142,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 10,
   },
+  itemDetail: {
+    fontSize: 14,
+    color: 'gray',
+    textAlign: 'center',
+  },
+  boldText: {
+    fontWeight: 'bold',
+  },
   link: {
     color: '#1E90FF',
     fontSize: 14,
     fontWeight: 'bold',
+    marginTop: 5,
   },
   loadMoreButton: {
     backgroundColor: '#28a745',
