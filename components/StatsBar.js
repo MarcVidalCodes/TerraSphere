@@ -1,28 +1,41 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
+import { getStreak, getGreenPoints } from '../lib/utils';
 
 const StatsBar = () => {
-  // Static data for front-end-only version
+  const [currentStreak, setCurrentStreak] = useState(getStreak());
+  const [greenPoints, setGreenPoints] = useState(getGreenPoints());
+  const scoreMultiplier = 1.75; // Fixed multiplier value
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentStreak(getStreak());
+      setGreenPoints(getGreenPoints());
+    }, 1000); // Update every second, adjust as necessary
+
+    return () => clearInterval(interval);
+  }, []);
+
   const data = [
     {
       id: "1",
-      title: "Study Points",
-      value: "150", // Static study points
+      title: "Green Points",
+      value: `${Math.round(greenPoints)}`, // Updated with green points
       icon: "trophy",
       iconType: "ionicon",
     },
     {
       id: "2",
       title: "Point Multiplier",
-      value: "x1.50", // Static multiplier
+      value: `x${scoreMultiplier.toFixed(2)}`, // Fixed multiplier value
       icon: "star",
       iconType: "ionicon",
     },
     {
       id: "3",
       title: "Current Streak",
-      value: "5", // Static streak
+      value: `${currentStreak}`, // Update with the current streak
       icon: "flame",
       iconType: "ionicon",
     },
