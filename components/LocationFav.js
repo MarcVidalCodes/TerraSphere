@@ -18,14 +18,11 @@ const LocationFav = () => {
     }
 
     const handlePress = (item) => {
-        if (route.name === 'StudyMapperScreen') {
-            dispatch(setDestination(item));
-            navigation.navigate('MapScreen');
-        }
+        dispatch(setDestination(item));
+        navigation.navigate('MapScreen');
     };
 
     const keyExtractor = (item, index) => {
-        // Use item.id if available, otherwise create a unique key using description and index
         return item.id ? item.id : `${item.description}-${index}`;
     };
 
@@ -36,12 +33,10 @@ const LocationFav = () => {
                 <Text style={tw`text-center text-gray-500`}>No study spots to show</Text>
             ) : (
                 <FlatList
-                    data={data} 
+                    data={data}
                     keyExtractor={keyExtractor}
                     ItemSeparatorComponent={() => (
-                        <View
-                            style={[tw`bg-gray-200`, { height: 1 }]}
-                        />
+                        <View style={[tw`bg-gray-200`, { height: 1 }]} />
                     )}
                     renderItem={({ item }) => (
                         <TouchableOpacity 
@@ -52,7 +47,8 @@ const LocationFav = () => {
                             onPress={() => handlePress(item)}
                             disabled={!origin}
                         >
-                            <Icon style={tw`mr-4 rounded-full bg-gray-300 p-3`}
+                            <Icon 
+                                style={tw`mr-4 rounded-full bg-gray-300 p-3`}
                                 name="map-marker"
                                 type="font-awesome"
                                 color="black"
@@ -60,7 +56,7 @@ const LocationFav = () => {
                             />
                             <View>
                                 <Text style={tw`font-semibold text-lg`}>
-                                    {item.description.includes('Cafe') ? 'Cafe' : 'Library'}
+                                    {item.description}
                                 </Text>
                                 <Text style={tw`text-xs text-gray-500 pt-1`}>
                                     {item.description}

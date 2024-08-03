@@ -36,7 +36,6 @@ const PlanterLocationScreen = () => {
                     return;
                 }
 
-                // Find the most relevant result
                 const relevantResult = data.results.find(result => result.types.includes(placeType));
                 if (!relevantResult) {
                     Alert.alert("No relevant results found", `No relevant ${keyword} found near the specified location.`);
@@ -75,8 +74,6 @@ const PlanterLocationScreen = () => {
                     returnKeyType={"search"}
                     minLength={2}
                     onPress={(data, details = null) => {
-                        console.log("Data: ", data);
-                        console.log("Details: ", details);
                         if (!details || !details.geometry) {
                             return;
                         }
@@ -88,13 +85,10 @@ const PlanterLocationScreen = () => {
                             })
                         );
                         setInputFilled(true);
-                        console.log("Origin set:", location);
                     }}
                     onFail={(error) => {
-                        console.error("GooglePlacesAutocomplete error: ", error);
                         dispatch(setOrigin(null));
                         setInputFilled(false);
-                        console.log("Failed to set origin");
                     }}
                     query={{
                         key: GOOGLE_API_KEY,
@@ -123,7 +117,6 @@ const PlanterLocationScreen = () => {
                     onClear={() => {
                         dispatch(setOrigin(null));
                         setInputFilled(false);
-                        console.log("Origin cleared");
                     }}
                 />
                 <View style={styles.separator} />

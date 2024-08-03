@@ -1,16 +1,17 @@
 import React, { useRef, useEffect } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, Alert } from 'react-native';
 import tw from 'twrnc';
 import MapView, { Marker } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import { GOOGLE_API_KEY } from '@env';
 import { Icon } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
-import { getOrigin, getDestination } from '../lib/utils'; // Import helper functions
+import { useSelector } from 'react-redux';
+import { selectOrigin, selectDestination } from '../slices/navSlice';
 
 const Map = () => {
-    const origin = getOrigin(); // Use helper function to get origin
-    const destination = getDestination(); // Use helper function to get destination
+    const origin = useSelector(selectOrigin);
+    const destination = useSelector(selectDestination);
     const mapRef = useRef(null);
     const navigation = useNavigation();
 
@@ -40,6 +41,10 @@ const Map = () => {
             try {
                 const response = await fetch(`https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${origin.description}&destinations=${destination.description}&key=${GOOGLE_API_KEY}`);
                 const data = await response.json();
+                if (data.rows[0].elements[0].status === "NOT_FOUND") {
+                    Alert.alert("Error", "Route not found between the selected locations.");
+                    return;
+                }
                 console.log(data.rows[0].elements[0].duration.text);
             } catch (error) {
                 console.error("Error fetching travel time:", error);
@@ -47,6 +52,10 @@ const Map = () => {
         };
         getTravelTime();
     }, [origin, destination]);
+
+    // Log the coordinates of origin and destination
+    console.log('Origin:', origin);
+    console.log('Destination:', destination);
 
     return (
         <View style={tw`flex-1`}>
@@ -70,11 +79,21 @@ const Map = () => {
             >
                 {origin && destination && (
                     <MapViewDirections
-                        origin={origin.description}
-                        destination={destination.description}
+                        origin={{
+                            latitude: origin.location.lat,
+                            longitude: origin.location.lng,
+                        }}
+                        destination={{
+                            latitude: destination.location.lat,
+                            longitude: destination.location.lng,
+                        }}
                         apikey={GOOGLE_API_KEY}
                         strokeWidth={3}
                         strokeColor="black"
+                        onError={(errorMessage) => {
+                            console.log("MapViewDirections Error:", errorMessage);
+                            Alert.alert("Error", "Failed to get directions");
+                        }}
                     />
                 )}
                 {origin?.location && (
