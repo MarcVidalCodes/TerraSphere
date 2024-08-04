@@ -126,7 +126,7 @@ const PlanterLocationScreen = () => {
                         onPress={() => inputFilled && handleDestination('park', 'park')}
                         disabled={!inputFilled}
                     >
-                        <Text style={styles.buttonText}>Plant Stuff!</Text>
+                        <Text style={styles.buttonText}>Explore!</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.separator} />
