@@ -18,9 +18,3 @@ We are proud of our determination that allowed us to delegate and complete tasks
 ## What we learned
 We learned that being in a team is extremely valuable for any programmer. Despite each having our own individual tasks, we were able to rely on each other's strengths to help us all complete our parts. 
 
-## Contributors
-A majority of the project was done using live share to reduce merge conflicts. Github commits may not accurately represent our contributions. Our tasks were delegated as follows: 
-Marc: Backend logic, home page, redux toolkit integration, openAI API intergration and Google Maps API integration.
-Shawn: Camera functioanlity, base64 encoding, redux toolkit integration, and helped with backend logic.
-Aneesh: Initiatives page, helped with maps components, and UI design
-Jonah: Worked on redeem page, helped with backend logic on redeem page, and UI design.
